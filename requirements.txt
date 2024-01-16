@@ -1,0 +1,13 @@
+express
+mongoose
+mongoose-paginate-v2
+multer
+nodemailer
+validator
+bcrypt
+cors
+dotenv
+jwt-simple
+moment
+
+nodemon --save-dev
