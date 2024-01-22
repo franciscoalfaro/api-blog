@@ -183,7 +183,11 @@ const list = async (req, res) => {
             status: "success",
             message: "Listado de saldos del usuario",
             redes:redes.docs,
-            contacto:redes.contacto
+            contacto:redes.contacto,
+            totalDocs:redes.totalDocs,
+            totalPages:redes.totalPages,
+            page:redes.page,
+
 
         });
 
