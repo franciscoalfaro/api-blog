@@ -26,6 +26,8 @@ const ComentarioRoutes = require("./routes/comentario")
 const RecoveryRouter = require("./routes/recovery")
 const ProyectoRouter = require("./routes/proyecto")
 const CategoriaRoutes = require("./routes/categoria")
+const RedesRouter = require("./routes/redes")
+const ContactoRouter = require("./routes/contacto")
 
 
 app.use("/api/user" ,UserRoutes)
@@ -34,6 +36,10 @@ app.use("/api/comentario" ,ComentarioRoutes)
 app.use("/api/recovery", RecoveryRouter)
 app.use("/api/proyecto", ProyectoRouter)
 app.use("/api/categoria",CategoriaRoutes )
+app.use("/api/redes", RedesRouter)
+app.use("/api/contacto", ContactoRouter)
+
+
 
 
 //escuchar peticiones 

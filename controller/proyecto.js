@@ -1,7 +1,7 @@
 const Proyecto = require("../models/proyecto")
 
 
-//end-point para crear articulos
+//end-point para crear proyectos
 const crearProyecto = async (req, res) => {
     const params = req.body;
 
@@ -36,7 +36,7 @@ const crearProyecto = async (req, res) => {
     }
 }
 
-//end-point para eliminar articulos
+//end-point para eliminar proyectos
 const eliminarProyecto = async (req, res) => {
     try {
         const articuloId = req.params.id;
@@ -79,7 +79,7 @@ const eliminarProyecto = async (req, res) => {
 }
 
 
-//end-point para modificar articulos
+//end-point para modificar proyectos
 const actualizarProyecto = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -164,10 +164,112 @@ const listarProyecto = async (req, res) => {
     }
 };
 
+
+//end-point para subir imagenes a los articulos
+const upload = async (req, res) => {
+    //sacar publication id
+    const proyectoId = req.params.id
+    console.log(proyectoId)
+
+    //recoger el fichero de image
+    if (!req.file) {
+        return res.status(404).send({
+            status: "error",
+            message: "image no seleccionada"
+        })
+    }
+
+    //conseguir nombre del archivo
+    let imagen = req.file.originalname
+    console.log(imagen)
+
+    //obtener extension del archivo
+    const imageSplit = imagen.split("\.");
+    const extension = imageSplit[1].toLowerCase();
+
+    //comprobar extension
+    if (extension != "png" && extension != "jpg" && extension != "jpeg" && extension != "gif") {
+
+        //borrar archivo y devolver respuesta en caso de que archivo no sea de extension valida.
+        const filePath = req.file.path
+        const fileDelete = fs.unlinkSync(filePath)
+
+        //devolver respuesta.        
+        return res.status(400).json({
+            status: "error",
+            mensaje: "Extension no invalida"
+        })
+
+    }
+
+    try {
+        const ImaUpdate = await Proyecto.findOneAndUpdate({ "userId": req.user.id, "_id": proyectoId }, { imagen: req.file.filename }, { new: true })
+        console.log(ImaUpdate)
+
+
+        if (!ImaUpdate) {
+            return res.status(400).json({ status: "error", message: "error al actualizar" })
+        }
+        //entrega respuesta corrrecta de image subida
+        return res.status(200).json({
+            status: "success",
+            message: "publicacion actualizada",
+            file: req.file,
+            ImaUpdate
+        });
+    } catch (error) {
+        if (error) {
+            const filePath = req.file.path
+            const fileDelete = fs.unlinkSync(filePath)
+            return res.status(500).send({
+                status: "error",
+                message: "error al obtener la informacion en servidor",
+            })
+        }
+
+    }
+
+}
+
+
+//devolver archivos multimedia
+const media = (req, res) => {
+
+    //obtener parametro de la url
+    const file = req.params.file
+
+    //montar el path real de la image
+    const filePath = "./uploads/project/" + file
+
+    try {
+        //comprobar si archivo existe
+        fs.stat(filePath, (error, exist) => {
+            if (!exist) {
+                return res.status(404).send({
+                    status: "error",
+                    message: "la image no existe"
+                })
+            }
+            //devolver archivo en el caso de existir  
+            return res.sendFile(path.resolve(filePath));
+        })
+
+    } catch (error) {
+        return res.status(500).send({
+            status: "error",
+            message: "error al obtener la informacion en servidor"
+        })
+    }
+}
+
+
 module.exports = {
     crearProyecto,
     eliminarProyecto,
     actualizarProyecto,
-    listarProyecto
+    listarProyecto,
+    upload,
+    media
+
 
 }

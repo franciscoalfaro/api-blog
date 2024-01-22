@@ -19,6 +19,14 @@ const ArticuloSchema = Schema({
         type: String,
         required: true
     },
+    Autor: {
+        type: String,
+        required: true
+    },
+    ApellidoAutor: {
+        type: String,
+        required: true
+    },
     categoria: {
         type: Schema.Types.ObjectId,
         ref: "Categoria"

@@ -417,12 +417,12 @@ const publicListUser = async (req, res) => {
 
         if (!usuarios) return res.status(404).json({ 
             status: "error", 
-            message: "no se han encontrado articulos" 
+            message: "no se han encontrado usuarios" 
         })
 
         return res.status(200).send({
             status: "success",
-            message: "articulos encontrados",
+            message: "usuarios encontrados",
             usuarios: usuarios.docs,
             totalPages: usuarios.totalPages,
             totalDocs: usuarios.totalDocs,

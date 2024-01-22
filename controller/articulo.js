@@ -4,13 +4,13 @@ const validarArticulo = require("../helpers/validateArticulo")
 const Articulo = require("../models/articulo")
 const Categoria = require("../models/categoria")
 const mongoosePagination = require('mongoose-paginate-v2')
+const User = require("../models/user")
 
 
 //end-point para crear articulos
 const crearArticulo = async (req, res) => {
     const params = req.body;  
-    console.log(params) 
-
+  
     if (!params.titulo || !params.descripcion || !params.contenido || !params.categoria) {
         return res.status(400).json({
             status: "Error",
@@ -24,7 +24,10 @@ const crearArticulo = async (req, res) => {
         validarArticulo.validar(params);
 
         let categoriaExistente = await Categoria.findOne({ userId, name: params.categoria });
-        console.log(categoriaExistente)
+        
+        //se busca el usuario por el id, y se extre el nombre y apellido para mostrar en la respuesta
+        let usuarioPublicacion = await User.findOne({_id:userId})
+
   
       if (!categoriaExistente) {
         categoriaExistente = await Categoria.create({ userId, name: params.categoria });
@@ -36,7 +39,9 @@ const crearArticulo = async (req, res) => {
             titulo: params.titulo,
             descripcion: params.descripcion,
             contenido: params.contenido,
-            categoria: categoriaExistente._id
+            categoria: categoriaExistente._id,
+            Autor:usuarioPublicacion.name,
+            ApellidoAutor:usuarioPublicacion.surname
           });
 
 
@@ -184,7 +189,7 @@ const upload = async (req, res) => {
     }
 
     try {
-        const ImaUpdate = await Articulo.findOneAndUpdate({ "user": req.user.id, "_id": articuloId }, { imagen: req.file.filename }, { new: true })
+        const ImaUpdate = await Articulo.findOneAndUpdate({ "userId": req.user.id, "_id": articuloId }, { imagen: req.file.filename }, { new: true })
 
 
         if (!ImaUpdate) {
