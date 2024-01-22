@@ -7,13 +7,13 @@ const RedesSchema = Schema({
         ref: 'User',
         required: true
     },
-    valor: {
+    name: {
         type: String,
         required: true
     },
-    contacto: {
-        type: Schema.Types.ObjectId,
-        ref: "Contacto"
+    valor: {
+        type: String,
+        required: true
     },
     fecha: {
         type: Date,

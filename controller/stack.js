@@ -4,13 +4,13 @@ const validarArticulo = require("../helpers/validateArticulo")
 
 const mongoosePagination = require('mongoose-paginate-v2')
 
-const Redes = require("../models/redes")
+const Stack = require("../models/stack")
 
 //end-point para crear articulos
-const crearRed = async (req, res) => {
+const crearStack = async (req, res) => {
     const params = req.body;  
   
-    if (!params.name || !params.valor) {
+    if (!params.name || !params.description) {
         return res.status(400).json({
             status: "Error",
             message: "Faltan datos por enviar",
@@ -20,75 +20,74 @@ const crearRed = async (req, res) => {
     try {
         const userId = req.user.id;
 
-        let contactoExistente = await Redes.findOne({ name: params.name, userId: userId  });
-        console.log(contactoExistente)
+        let stackExistente = await Stack.findOne({ name: params.name, userId: userId  });
 
-        if(contactoExistente){
+        if(stackExistente){
             return res.status(400).json({
                 status: "error",
-                message: "el contacto ya existe intente con otro"
+                message: "el stack ya existe intente con otro o actualice"
             });
     
         }
         
         
-        const newRed = await Redes.create({
+        const newStack = await Stack.create({
             userId: userId,
-            valor: params.valor,
+            description: params.description,
             name: params.name
           });
 
 
 
-        await newRed.save();
+        await newStack.save();
 
         return res.status(200).json({
             status: "success",
-            message: "Red guardada de forma correcta",
-            newRed,
+            message: "stack guardado de forma correcta",
+            newStack,
         });
     } catch (error) {
         console.error(error);
 
         return res.status(500).json({
             status: "error",
-            message: "Error al crear el artículo",
+            message: "Error al crear el stack",
             error: error.message || "Error desconocido",
         });
     }
 }
 
-//end-point para eliminar red
-const eliminarRed = async (req, res) => {
+//end-point para eliminar stack
+const eliminarStack = async (req, res) => {
     try {
-        const redId = req.params.id;
+        const stackId = req.params.id;
         const userId = req.user.id;
         console.log(userId)
 
-        // Buscar la red y verificar si el usuario logueado es el creador
-        const redEliminar = await Redes.findOne({ _id: redId, userId: userId });
+        // Buscar stack y verificar si el usuario logueado es el creador
+        const stackEliminar = await Stack.findOne({ _id: stackId, userId: userId });
 
-        if (!redEliminar) {
+        if (!stackEliminar) {
             return res.status(404).json({
                 status: 'error',
-                message: 'Red no encontrado o no tiene permisos para eliminarlo'
+                message: 'stack no encontrado o no tiene permisos para eliminarlo'
             });
         }
 
-        // Verificar si el usuario logueado es el creador de la red
-        if (redEliminar.userId.toString() !== userId) {
+        // Verificar si el usuario logueado es el creador de la stack
+        if (stackEliminar.userId.toString() !== userId) {
             return res.status(403).json({
                 status: 'error',
-                message: 'No tiene permisos para eliminar esta red'
+                message: 'No tiene permisos para eliminar esta stack'
             });
         }
 
-        await Redes.findByIdAndDelete(redId);
+        await Stack.findByIdAndDelete(stackId);
 
         return res.status(200).json({
             status: 'success',
-            message: 'Red eliminado correctamente',
-            redEliminada: redEliminar
+            message: 'stack eliminado correctamente',
+            stackEliminar: stackEliminar
         });
 
     } catch (error) {
@@ -101,39 +100,39 @@ const eliminarRed = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    const { id } = req.params; // ID de la red a actualizar
-    const { valor, name } = req.body; // Nuevos datos de la red 
+    const { id } = req.params; // ID de la stack a actualizar
+    const { description, name } = req.body; // Nuevos datos de la stack 
 
     try {
 
-        // Buscar la red por su ID
+        // Buscar stack por su ID
 
-        const redesExistente = await Redes.findOne({ name });
+        const stackExistente = await Stack.findOne({ name });
 
 
         //verifica si existe un campo con el mismo nombre y un ID diferente al de la categoría que se está actualizando
-        if (redesExistente && redesExistente._id.toString() !== id) {
+        if (stackExistente && stackExistente._id.toString() !== id) {
             return res.status(409).json({
                 status: 'error',
-                message: 'el nombre la red ya esta siendo utilizado verifica el nombre'
+                message: 'el nombre de stack ya esta siendo utilizado verifica el nombre'
             });
         }
 
-        const redActualizada = await Redes.findByIdAndUpdate(
+        const stackActualizado = await Stack.findByIdAndUpdate(
             id,
-            { name, valor },
+            { name, description },
             { new: true }
         );
 
         return res.status(200).json({
             status: 'success',
-            message: 'Red actualizada correctamente',
-            redActualizada
+            message: 'stack actualizada correctamente',
+            stackActualizado
         });
     } catch (error) {
         return res.status(500).json({
             status: 'error',
-            message: 'Error al actualizar la red',
+            message: 'Error al actualizar stack',
             error: error.message
         });
     }
@@ -163,24 +162,24 @@ const list = async (req, res) => {
 
     try {
         // Filtrar el saldo por el ID del usuario
-        const redes = await Redes.paginate({ userId: userId }, opciones);
+        const stack = await Stack.paginate({ userId: userId }, opciones);
 
 
-        if (!redes || redes.docs.length === 0) {
+        if (!stack || stack.docs.length === 0) {
             return res.status(404).json({
                 status: "Error",
-                message: "No se encontró saldo para este usuario"
+                message: "No se encontró stack para este usuario"
             });
         }
 
         return res.status(200).send({
             status: "success",
-            message: "Listado de saldos del usuario",
-            redes:redes.docs,
-            totalDocs:redes.totalDocs,
-            totalPages:redes.totalPages,
-            limit:redes.limit,
-            page:redes.page,
+            message: "Listado de stack del usuario",
+            stack:stack.docs,
+            totalDocs:stack.totalDocs,
+            totalPages:stack.totalPages,
+            limit:stack.limit,
+            page:stack.page,
 
 
         });
@@ -196,8 +195,8 @@ const list = async (req, res) => {
 
 
 module.exports={
-    crearRed,
-    eliminarRed,
+    crearStack,
+    eliminarStack,
     update,
     list
 }

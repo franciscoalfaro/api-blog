@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const ContactoSchema = Schema({
+const StackSchema = Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -11,12 +11,19 @@ const ContactoSchema = Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String,
+        required: true
+    },
+    icon: {
+        type:String
+    },
     fecha: {
         type: Date,
         default: Date.now
     }
 });
 
-ContactoSchema.plugin(mongoosePaginate);
+StackSchema.plugin(mongoosePaginate);
 
-module.exports = model("Contacto", ContactoSchema, "contactos");
+module.exports = model("Stack", StackSchema, "stacks");
