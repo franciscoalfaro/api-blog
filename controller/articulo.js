@@ -276,6 +276,7 @@ const buscador = async (req, res) => {
                 { "titulo": { $regex: busqueda, $options: "i" } },
                 { "descripcion": { $regex: busqueda, $options: "i" } },
                 { "contenido": { $regex: busqueda, $options: "i" } },
+                { "Autor": { $regex: busqueda, $options: "i" } },
             ]
         }, options);
 

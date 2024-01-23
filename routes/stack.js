@@ -11,6 +11,8 @@ router.delete("/delete/:id",check.auth, StackController.eliminarStack)
 router.put("/update/:id",check.auth, StackController.update)
 router.get("/list/:page?",check.auth, StackController.list)
 
+router.get("/listuser/:id/:page?", StackController.listStackPorId)
+
 
 
 

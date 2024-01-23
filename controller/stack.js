@@ -140,7 +140,7 @@ const update = async (req, res) => {
 }
 
 
-//este end-poit es para listar el historico del saldo del usuario 
+//list stack del usuario autenticado
 const list = async (req, res) => {
     const userId = req.user.id; // Obtener el ID del usuario autenticado desde el token
     
@@ -156,8 +156,6 @@ const list = async (req, res) => {
         page: page,
         limit: itemPerPage,
         sort: { _id: -1 },
-        select: ("-password -email -role -__v")
-
     };
 
     try {
@@ -187,16 +185,70 @@ const list = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             status: 'error',
-            message: 'Error al listar el saldo',
+            message: 'error al listar stack',
             error: error.message
         });
     }
 };
+
+//listar stack del usuario de x perfil
+const listStackPorId = async (req, res) => {
+    const userId = req.params.id;
+    
+    let page = 1
+    if (req.params.page) {
+        page = req.params.page
+    }
+    page = parseInt(page)
+
+    let itemPerPage = 6
+
+    const opciones = {
+        page: page,
+        limit: itemPerPage,
+        sort: { fecha: -1 },
+        select: ("-password -email -role -__v")       
+    }
+
+    try {
+       
+        const stack = await Stack.paginate({userId:userId}, opciones);
+
+        if (!stack || stack.docs.length === 0) {
+            return res.status(404).json({
+                status: "Error",
+                message: "No se encontró stack para este usuario"
+            });
+        }
+
+
+
+        return res.status(200).send({
+            status: "success",
+            message: "stack encontrados",
+            stack:stack.docs,
+            page:stack.page,
+            totalDocs:stack.totalDocs,
+            totalPages: stack.totalPages,
+            itemPerPage:stack.limit
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            status: 'error',
+            message: 'error al listar stack',
+            error: error.message,
+        });
+
+    }
+}
+
 
 
 module.exports={
     crearStack,
     eliminarStack,
     update,
-    list
+    list,
+    listStackPorId
 }
