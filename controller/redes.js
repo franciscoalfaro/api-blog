@@ -141,7 +141,7 @@ const update = async (req, res) => {
 }
 
 
-//este end-poit es para listar el historico del saldo del usuario 
+//este end-poit es para listar las redes del usuario logueado
 const list = async (req, res) => {
     const userId = req.user.id; // Obtener el ID del usuario autenticado desde el token
     
@@ -169,13 +169,13 @@ const list = async (req, res) => {
         if (!redes || redes.docs.length === 0) {
             return res.status(404).json({
                 status: "Error",
-                message: "No se encontró saldo para este usuario"
+                message: "No se encontró redes para este usuario"
             });
         }
 
         return res.status(200).send({
             status: "success",
-            message: "Listado de saldos del usuario",
+            message: "Listado de redes del usuario",
             redes:redes.docs,
             totalDocs:redes.totalDocs,
             totalPages:redes.totalPages,
@@ -188,16 +188,80 @@ const list = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             status: 'error',
-            message: 'Error al listar el saldo',
+            message: 'Error al listar las redes',
             error: error.message
         });
     }
 };
+
+//end-point para listar las redes un usuario por ID
+const listUserId = async(req, res)=>{
+
+    const userParams = req.params.id;
+    const userIdentity = '65a2bd122bfbd8c09b1325bd';
+    let userId;
+    
+    if (userParams) {
+      userId = userParams;
+    } else {
+      userId = userIdentity;
+    }
+
+    let page = 1;
+
+    if (req.params.page) {
+        page = parseInt(req.params.page);
+    }
+
+    const itemPerPage = 4;
+
+    const opciones = {
+        page: page,
+        limit: itemPerPage,
+        sort: { _id: -1 },
+        select: ("-password -email -role -__v")
+
+    };
+
+    try {
+        // Filtrar el saldo por el ID del usuario
+        const redes = await Redes.paginate({ userId: userId }, opciones);
+
+
+        if (!redes || redes.docs.length === 0) {
+            return res.status(404).json({
+                status: "Error",
+                message: "No se encontró redes para este usuario"
+            });
+        }
+
+        return res.status(200).send({
+            status: "success",
+            message: "Listado de redes del usuario",
+            redes:redes.docs,
+            totalDocs:redes.totalDocs,
+            totalPages:redes.totalPages,
+            limit:redes.limit,
+            page:redes.page,
+
+
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            status: 'error',
+            message: 'Error al listar las redes',
+            error: error.message
+        });
+    }
+
+}
 
 
 module.exports={
     crearRed,
     eliminarRed,
     update,
-    list
+    list,
+    listUserId
 }

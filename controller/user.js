@@ -13,12 +13,9 @@ const jwt = require("../services/jwt")
 
 //registro usuarios
 const register = (req, res) => {
-
     //recoger datos de la peticion
     let params = req.body;
     console.log(params)
-
-
     //comprobar datos + validacion
     if (!params.name || !params.nick || !params.email || !params.password) {
         return res.status(400).json({

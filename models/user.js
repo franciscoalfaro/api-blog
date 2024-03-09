@@ -12,6 +12,9 @@ const UserSchema = Schema({
     bio:{
         type:String
     },
+    biodos:{
+        type:String
+    },
     nick:{
         type:String,
         require:true

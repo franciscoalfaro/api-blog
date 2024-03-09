@@ -19,10 +19,11 @@ const validate = (params) => {
     let password = !validator.isEmpty(params.password)
        /*&& validator.isStrongPassword(params.password, { minLength: 5, minNumbers: 1 })*/
 
-    if (params.bio) {
+    if (params.bio || params.biodos ) {
         let bio = validator.isLength(params.bio, { min: undefined, max: 255 })
+        let biodos = validator.isLength(params.biodos, { min: undefined, max: 255 })
 
-        if (!bio) {
+        if (!bio || biodos) {
             throw new Error("No se ha superado validacion")
 
         } else {

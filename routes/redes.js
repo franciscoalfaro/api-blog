@@ -11,6 +11,9 @@ router.delete("/delete/:id",check.auth, RedesController.eliminarRed)
 router.put("/update/:id",check.auth, RedesController.update)
 router.get("/list/:page?",check.auth, RedesController.list)
 
+//public
+router.get("/listuser/:id/:page?", RedesController.listUserId)
+
 
 
 
