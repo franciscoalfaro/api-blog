@@ -2,10 +2,10 @@
   "name": "api-blog",
   "version": "1.0.0",
   "description": "api blog2.0",
-  "main": "index.js",
+  "main": "inicio.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start":"nodemon index.js"
+    "start":"nodemon inicio.js"
   },
   "author": "Francisco Alfaro",
   "license": "MIT",
