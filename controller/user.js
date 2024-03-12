@@ -205,7 +205,7 @@ const list = (req, res) => {
 const update = (req, res) => {
     //recoger datos del usuario que se actualizara
     const userIdentity = req.user
-    console.log(userIdentity)
+
 
     let userToUpdate = req.body
 
