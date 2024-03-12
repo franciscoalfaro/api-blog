@@ -12,7 +12,7 @@ const app = express();
 const puerto = 4000;
 
 //configurar cors
-app.use(cors('*'));
+app.use(cors());
 
 //conertir los datos del body a obj js
 app.use(express.json());
