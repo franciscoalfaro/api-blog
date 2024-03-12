@@ -280,7 +280,7 @@ const avatar = (req, res) => {
 
     //obtener parametro de la url
     const file = req.params.file
-
+    
     //montar el path real de la image
     const filePath = "./uploads/avatars/" + file
 
@@ -307,6 +307,7 @@ const avatar = (req, res) => {
 
 //subida de image
 const upload = async (req, res) => {
+    
     //recoger el fichero de image
     if (!req.file) {
         return res.status(404).send({
@@ -317,6 +318,7 @@ const upload = async (req, res) => {
 
     //conseguir nombre del archivo
     let image = req.file.originalname
+    console.log(image)
 
     //obtener extension del archivo
     const imageSplit = image.split("\.");
