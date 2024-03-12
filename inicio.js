@@ -12,12 +12,11 @@ const app = express();
 const puerto = 4000;
 
 //configurar cors
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://franciscoalfaro.cl');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-});
+app.use(cors({
+    origin: 'http://franciscoalfaro.cl',
+    allowedHeaders: ['Authorization', 'Content-Type']
+}));
+
 //conertir los datos del body a obj js
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
