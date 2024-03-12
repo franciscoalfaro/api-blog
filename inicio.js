@@ -11,19 +11,10 @@ connection();
 const app = express();
 const puerto = 4000;
 
-const alloIp = '195.201.179.80' 
-const web = 'http://franciscoalfaro.cl'
-
 //configurar cors
 app.use(cors({
-    origin: function (origin, callback) {
-        if (origin === alloIp || web) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    }
-}));
+    origin: 'http://franciscoalfaro.cl'
+  }));
 
 //conertir los datos del body a obj js
 app.use(express.json());
