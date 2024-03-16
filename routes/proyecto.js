@@ -2,19 +2,18 @@ const express = require("express")
 const router = express.Router()
 const multer = require("multer")
 const check = require("../middlewares/auth")
-
 const ProyectoController = require("../controller/proyecto")
 
 
 //configuracion de subida
 const storage = multer.diskStorage({
     destination:(req,file, cb) =>{
-        cb(null,"./uploads/project")
+        cb(null,"./uploads/proyecto")
 
     },
 
     filename:(req,file, cb) =>{
-        cb(null,"project-"+Date.now()+"-"+file.originalname)
+        cb(null,"proyecto-"+Date.now()+"-"+file.originalname)
         
     }
 })
@@ -30,7 +29,14 @@ router.delete("/delete/:id",check.auth, ProyectoController.eliminarProyecto)
 
 //media
 router.post("/upload/:id",[check.auth, uploads.single("file0")], ProyectoController.upload)
+
 router.get("/media/:file", ProyectoController.media)
+
+
+//list proyectos por id
+
+router.get("/listproyectuser/:id/:page?", ProyectoController.listStackPorId)
+
 
 
 

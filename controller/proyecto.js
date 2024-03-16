@@ -1,4 +1,6 @@
 const Proyecto = require("../models/proyecto")
+const fs = require("fs")
+const path = require("path")
 
 
 //end-point para crear proyectos
@@ -167,7 +169,7 @@ const listarProyecto = async (req, res) => {
 
 //end-point para subir imagenes a los articulos
 const upload = async (req, res) => {
-    //sacar publication id
+    //sacar proyecto id
     const proyectoId = req.params.id
     console.log(proyectoId)
 
@@ -238,9 +240,11 @@ const media = (req, res) => {
     //obtener parametro de la url
     const file = req.params.file
 
-    //montar el path real de la image
-    const filePath = "./uploads/project/" + file
 
+    //montar el path real de la image
+    const filePath = "./uploads/proyecto/" + file
+    console.log(filePath)
+ 
     try {
         //comprobar si archivo existe
         fs.stat(filePath, (error, exist) => {
@@ -249,12 +253,15 @@ const media = (req, res) => {
                     status: "error",
                     message: "la image no existe"
                 })
+              
             }
             //devolver archivo en el caso de existir  
             return res.sendFile(path.resolve(filePath));
+            
         })
 
     } catch (error) {
+        console.log(error)
         return res.status(500).send({
             status: "error",
             message: "error al obtener la informacion en servidor"
@@ -263,13 +270,67 @@ const media = (req, res) => {
 }
 
 
+const listStackPorId = async (req, res) => {
+    const userId = req.params.id;
+    
+    let page = 1
+    if (req.params.page) {
+        page = req.params.page
+    }
+    page = parseInt(page)
+
+    let itemPerPage = 6
+
+    const opciones = {
+        page: page,
+        limit: itemPerPage,
+        sort: { fecha: -1 },
+        select: ("-password -email -role -__v")       
+    }
+
+    try {
+       
+        const proyect = await Proyecto.paginate({userId:userId}, opciones);
+
+        if (!proyect || proyect.docs.length === 0) {
+            return res.status(404).json({
+                status: "Error",
+                message: "No se encontró proyectos para este usuario"
+            });
+        }
+
+
+
+        return res.status(200).send({
+            status: "success",
+            message: "proyectos encontrados",
+            proyectos:proyect.docs,
+            page:proyect.page,
+            totalDocs:proyect.totalDocs,
+            totalPages: proyect.totalPages,
+            itemPerPage:proyect.limit
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            status: 'error',
+            message: 'error al listar proyecto',
+            error: error.message,
+        });
+
+    }
+}
+
+
+
 module.exports = {
     crearProyecto,
     eliminarProyecto,
     actualizarProyecto,
     listarProyecto,
     upload,
-    media
+    media,
+    listStackPorId
 
 
 }

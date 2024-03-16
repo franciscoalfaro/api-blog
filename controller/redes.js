@@ -5,6 +5,7 @@ const validarArticulo = require("../helpers/validateArticulo")
 const mongoosePagination = require('mongoose-paginate-v2')
 
 const Redes = require("../models/redes")
+const Users = require("../models/user")
 
 //end-point para crear articulos
 const crearRed = async (req, res) => {
@@ -158,7 +159,6 @@ const list = async (req, res) => {
         limit: itemPerPage,
         sort: { _id: -1 },
         select: ("-password -email -role -__v")
-
     };
 
     try {
@@ -194,18 +194,31 @@ const list = async (req, res) => {
     }
 };
 
-//end-point para listar las redes un usuario por ID
+//end-point para listar las redes de un usuario por ID
 const listUserId = async(req, res)=>{
 
-    const userParams = req.params.id;
-    const userIdentity = '65a2bd122bfbd8c09b1325bd';
-    let userId;
-    
-    if (userParams) {
-      userId = userParams;
-    } else {
-      userId = userIdentity;
+    let userParams = req.params.id;
+    console.log(userParams)
+
+    if (!userParams) {
+        try {
+            const usuario = await Users.findOne({ email: "franciscoalfar@gmail.com" });
+            if (!usuario) {
+                return res.status(404).json({
+                    status: "Error",
+                    message: "No se encontró el usuario en la base de datos"
+                });
+            }
+            userParams = usuario._id;
+        } catch (error) {
+            return res.status(500).json({
+                status: 'error',
+                message: 'Error al buscar el usuario en la base de datos',
+                error: error.message
+            });
+        }
     }
+
 
     let page = 1;
 
@@ -225,9 +238,8 @@ const listUserId = async(req, res)=>{
 
     try {
         // Filtrar el saldo por el ID del usuario
-        const redes = await Redes.paginate({ userId: userId }, opciones);
-
-
+        const redes = await Redes.paginate({ userId: userParams }, opciones);
+       
         if (!redes || redes.docs.length === 0) {
             return res.status(404).json({
                 status: "Error",
