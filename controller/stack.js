@@ -201,7 +201,7 @@ const listStackPorId = async (req, res) => {
     }
     page = parseInt(page)
 
-    let itemPerPage = 6
+    let itemPerPage = 4
 
     const opciones = {
         page: page,

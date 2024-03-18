@@ -219,33 +219,31 @@ const upload = async (req, res) => {
 
 //devolver archivos multimedia
 const media = (req, res) => {
-
-    //obtener parametro de la url
-    const file = req.params.file
-
-    //montar el path real de la image
-    const filePath = "./uploads/publications/" + file
+    const file = req.params.file;
+    const filePath = "./uploads/publications/" + file;
 
     try {
-        //comprobar si archivo existe
         fs.stat(filePath, (error, exist) => {
             if (!exist) {
                 return res.status(404).send({
                     status: "error",
-                    message: "la image no existe"
-                })
+                    message: "La imagen no existe"
+                });
             }
-            //devolver archivo en el caso de existir  
-            return res.sendFile(path.resolve(filePath));
-        })
 
+            // Configurar las cabeceras de caché
+            res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
+
+            // Devolver el archivo si existe
+            return res.sendFile(path.resolve(filePath));
+        });
     } catch (error) {
         return res.status(500).send({
             status: "error",
-            message: "error al obtener la informacion en servidor"
-        })
+            message: "Error al obtener la información en el servidor"
+        });
     }
-}
+};
 
 
 //end-point para buscar articulos

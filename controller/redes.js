@@ -198,7 +198,6 @@ const list = async (req, res) => {
 const listUserId = async(req, res)=>{
 
     let userParams = req.params.id;
-    console.log(userParams)
 
     if (!userParams) {
         try {
