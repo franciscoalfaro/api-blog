@@ -2,6 +2,9 @@ require('dotenv').config();
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const nodemailer = require('nodemailer');
+const fs = require("fs")
+const path = require("path");
+
 
 const recuperarContrasena = async (req, res) => {
     const { email } = req.body;
@@ -53,7 +56,7 @@ function generarNuevaContrasena() {
     return nuevaContrasena;
 }
 
-// Función para enviar correo de recuperación utilizando IONOS SMTP
+// Función para enviar correo de recuperación utilizando servidor SMTP
 async function enviarCorreoRecuperacion(email, nuevaContrasena) {
     const emailUser = process.env.EMAIL_USER;
     const emailPassword = process.env.EMAIL_PASSWORD;
@@ -63,16 +66,19 @@ async function enviarCorreoRecuperacion(email, nuevaContrasena) {
         port: 587,
         secure: false,
         auth: {
-            user: emailUser, // Cambia con tu dirección de correo de IONOS 
+            user: emailUser, // Cambia con tu dirección de correo de tu servidor 
             pass: emailPassword // Cambia con tu contraseña
         }
     });
 
+    const emailTemplatePath = path.join('uploads', 'html', 'reset-password.html');
+    const emailTemplate = fs.readFileSync(emailTemplatePath, 'utf8');
+
     const mailOptions = {
-        from: emailUser, // Cambia con tu dirección de correo de IONOS
+        from: emailUser, // Cambia con tu dirección de correo de tu servidor
         to: email,
         subject: 'Recuperación de Contraseña',
-        text: `Tu nueva contraseña temporal es: ${nuevaContrasena}. Te recomendamos cambiarla una vez hayas iniciado sesión.`
+        html: emailTemplate.replace('${nuevaContrasena}', nuevaContrasena)
     };
 
 
