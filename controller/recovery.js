@@ -59,7 +59,7 @@ async function enviarCorreoRecuperacion(email, nuevaContrasena) {
     const emailPassword = process.env.EMAIL_PASSWORD;
 
     const transporter = nodemailer.createTransport({
-        host: 'smtp.ionos.com',
+        host: 'smtp.zoho.com',
         port: 587,
         secure: false,
         auth: {
@@ -74,6 +74,7 @@ async function enviarCorreoRecuperacion(email, nuevaContrasena) {
         subject: 'Recuperación de Contraseña',
         text: `Tu nueva contraseña temporal es: ${nuevaContrasena}. Te recomendamos cambiarla una vez hayas iniciado sesión.`
     };
+
 
     await transporter.sendMail(mailOptions);
 }
