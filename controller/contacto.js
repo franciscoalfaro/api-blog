@@ -5,7 +5,6 @@ const path = require("path");
 
 const contacto = async (req, res) => {
     let params = req.body;
-    console.log(params)
     try {
         if (!params.nombre ||!params.apellido || !params.telefono || !params.email || !params.mensaje) {
             return res.status(400).json({
