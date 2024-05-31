@@ -3,8 +3,8 @@ require('dotenv').config();
 
 const connection = async()=>{
     try {
-        await mongoose.connect(process.env.MONGODB_URI,)
-        //await mongoose.connect('mongodb://localhost:27017/Blog2')
+        //await mongoose.connect(process.env.MONGODB_URI,)
+        await mongoose.connect('mongodb://localhost:27017/Blog2')
         console.log("Connection success BD")
         
     } catch (error) {

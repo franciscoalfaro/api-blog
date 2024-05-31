@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 const multer = require("multer")
 const UserController = require("../controller/user")
+const ContactoController = require("../controller/contacto")
 const check = require("../middlewares/auth")
 
 //configuracion de subida
@@ -33,6 +34,8 @@ router.delete("/delete/:id", check.auth, UserController.remove)
 //rutas publicas
 router.get("/lastprofiles/:page?", UserController.publicListUser)
 router.get("/profileselect/:id", UserController.publicProfile)
+
+router.post("/contacto",ContactoController.contacto)
 
 
 
